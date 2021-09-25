@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,6 +12,7 @@
     <PackageIcon>akeraiotitasoft.png</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/Akeraiotitasoft/DependencyInjectionModule</RepositoryUrl>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
