@@ -15,10 +15,25 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
             serviceCollectionModule.ConfigureServices(serviceCollection);
         }
 
+        public static void LoadModuleEx<TModule>(this IServiceCollection serviceCollection)
+            where TModule : IServiceCollectionModuleEx
+                => LoadModuleEx<TModule>(serviceCollection, DefaultRegistrationDelegate.Delegate);
+
         public static void LoadModuleEx<TModule>(this IServiceCollection serviceCollection, RegistrationDelegate registrationDelegate)
             where TModule : IServiceCollectionModuleEx
         {
             var serviceCollectionModule = (IServiceCollectionModuleEx)Activator.CreateInstance(typeof(TModule));
+            serviceCollectionModule.ConfigureServices(serviceCollection, registrationDelegate);
+        }
+
+        public static void LoadModuleEx2<TModule>(this IServiceCollection serviceCollection)
+            where TModule : IServiceCollectionModuleEx
+        => LoadModuleEx2<TModule>(serviceCollection, DefaultRegistrationDelegate2.Delegate);
+
+        public static void LoadModuleEx2<TModule>(this IServiceCollection serviceCollection, RegistrationDelegate2 registrationDelegate)
+            where TModule : IServiceCollectionModuleEx
+        {
+            var serviceCollectionModule = (IServiceCollectionModuleEx2)Activator.CreateInstance(typeof(TModule));
             serviceCollectionModule.ConfigureServices(serviceCollection, registrationDelegate);
         }
 
@@ -67,6 +82,35 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
             foreach (var type in servicesConfigurationModuleTypes)
             {
                 var serviceCollectionModule = (IServiceCollectionModuleEx)Activator.CreateInstance(type);
+                if (serviceCollectionModuleFilter(serviceCollectionModule))
+                {
+                    serviceCollectionModule.ConfigureServices(serviceCollection, registrationDelegate);
+                }
+            }
+        }
+
+        public static void LoadModulesEx2(this IServiceCollection serviceCollection)
+            => serviceCollection.LoadModulesEx2(x => true, DefaultRegistrationDelegate2.Delegate);
+
+        public static void LoadModulesEx2(this IServiceCollection serviceCollection, Func<IServiceCollectionModule, bool> serviceCollectionModuleFilter)
+            => serviceCollection.LoadModulesEx2(serviceCollectionModuleFilter, DefaultRegistrationDelegate2.Delegate);
+
+        public static void LoadModulesEx2(this IServiceCollection serviceCollection, RegistrationDelegate2 registrationDelegate)
+            => serviceCollection.LoadModulesEx2(x => true, registrationDelegate);
+
+        public static void LoadModulesEx2(this IServiceCollection serviceCollection, Func<IServiceCollectionModule, bool> serviceCollectionModuleFilter, RegistrationDelegate2 registrationDelegate)
+        {
+            // Get all IServiceCollectionModule implementations
+            var servicesConfigurationModuleTypes =
+                AppDomain.CurrentDomain.GetAssemblies()
+                         .SelectMany(assembly => assembly.GetLoadableTypes())
+                         .Where(type => typeof(IServiceCollectionModuleEx2).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                         .Where(type => type.GetConstructor(Type.EmptyTypes) != null)
+                         .ToList();
+
+            foreach (var type in servicesConfigurationModuleTypes)
+            {
+                var serviceCollectionModule = (IServiceCollectionModuleEx2)Activator.CreateInstance(type);
                 if (serviceCollectionModuleFilter(serviceCollectionModule))
                 {
                     serviceCollectionModule.ConfigureServices(serviceCollection, registrationDelegate);
