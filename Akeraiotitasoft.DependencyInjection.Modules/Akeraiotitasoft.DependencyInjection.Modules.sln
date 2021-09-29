@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akeraiotitasoft.DependencyInjection.Modules", "Akeraiotitasoft.DependencyInjection.Modules\Akeraiotitasoft.DependencyInjection.Modules.csproj", "{E52580F1-78BF-4340-82FF-B9AFD32A6652}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akeraiotitasoft.DependencyInjection.Modules", "Akeraiotitasoft.DependencyInjection.Modules\Akeraiotitasoft.DependencyInjection.Modules.csproj", "{E52580F1-78BF-4340-82FF-B9AFD32A6652}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abstraction", "Abstraction\Abstraction.csproj", "{8207BB85-E283-4D8E-B2E8-47B66D0FCAB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstraction", "Abstraction\Abstraction.csproj", "{8207BB85-E283-4D8E-B2E8-47B66D0FCAB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Test", "Modules.Test\Modules.Test.csproj", "{4FD97C20-8574-4754-BE8B-F3BD10607FD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8207BB85-E283-4D8E-B2E8-47B66D0FCAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8207BB85-E283-4D8E-B2E8-47B66D0FCAB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8207BB85-E283-4D8E-B2E8-47B66D0FCAB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FD97C20-8574-4754-BE8B-F3BD10607FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FD97C20-8574-4754-BE8B-F3BD10607FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FD97C20-8574-4754-BE8B-F3BD10607FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FD97C20-8574-4754-BE8B-F3BD10607FD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

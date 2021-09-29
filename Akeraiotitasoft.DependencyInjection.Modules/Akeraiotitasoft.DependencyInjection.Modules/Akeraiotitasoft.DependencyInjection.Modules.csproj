@@ -10,7 +10,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Akeraiotitasoft/DependencyInjectionModule</RepositoryUrl>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <PackageTags>ioc, di, dependency, injection, modules</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -24,18 +24,7 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
         {
             _registrationDelegate = (serviceType, implementationType, serviceLifetime, serviceCollection) =>
             {
-                switch (serviceLifetime)
-                {
-                    case ServiceLifetime.Singleton:
-                        serviceCollection.AddSingleton(serviceType, implementationType);
-                        break;
-                    case ServiceLifetime.Scoped:
-                        serviceCollection.AddScoped(serviceType, implementationType);
-                        break;
-                    case ServiceLifetime.Transient:
-                        serviceCollection.AddTransient(serviceType, implementationType);
-                        break;
-                }
+                serviceCollection.Add(new ServiceDescriptor(serviceType, implementationType, serviceLifetime));
             };
         }
     }
