@@ -1,4 +1,4 @@
-﻿using Akeraiotitasoft.DependencyInjection.Modules.Abstraction;
+﻿using Akeraiotitasoft.DependencyInjection.Modules;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
 {
     public class RegistrationOverrideSwitch
     {
-        private RegistrationDelegate2 _registrationDelegate;
+        private RegistrationDelegate _registrationDelegate;
         private IServiceCollection _serviceCollection;
         private Type _serviceType;
         private object _instance;
@@ -20,7 +20,7 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
         private bool _tryRegister;
         private bool _overrideRan;
 
-        public RegistrationOverrideSwitch(RegistrationDelegate2 registrationDelegate, IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister)
+        public RegistrationOverrideSwitch(RegistrationDelegate registrationDelegate, IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister)
         {
             _registrationDelegate = registrationDelegate;
             _serviceCollection = serviceCollection;
@@ -30,6 +30,11 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
             _serviceLifetime = serviceLifetime;
             _factory = factory;
             _tryRegister = tryRegister;
+        }
+
+        public RegistrationOverrideSwitch(IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister)
+            : this(DefaultRegistrationDelegate.Delegate, serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister)
+        {
         }
 
         public bool Case(Type serviceType, object instance)

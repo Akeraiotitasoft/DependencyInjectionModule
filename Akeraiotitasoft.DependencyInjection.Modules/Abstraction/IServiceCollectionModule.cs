@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Akeraiotitasoft.DependencyInjection.Modules.Abstraction
+namespace Akeraiotitasoft.DependencyInjection.Modules
 {
     public interface IServiceCollectionModule
     {
-        void ConfigureServices(IServiceCollection serviceCollection);
+        void ConfigureServices(IServiceCollectionModuleContext context);
     }
 }
