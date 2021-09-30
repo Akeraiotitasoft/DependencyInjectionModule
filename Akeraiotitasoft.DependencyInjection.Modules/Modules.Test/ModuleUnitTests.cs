@@ -99,5 +99,27 @@ namespace Modules.Test
             Assert.AreEqual(4, c);
             Assert.AreEqual("Hello World!", message);
         }
+
+        [Test]
+        public void LoadModules_Override4()
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            DefaultRegistrationDelegate.Current =
+                (IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
+                {
+                    RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
+                    registrationOverrideSwitch.Case<IA, MockA2>();
+                    registrationOverrideSwitch.Default();
+                };
+
+            serviceCollection.LoadModules();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            IA a = serviceProvider.GetRequiredService<IA>();
+            IB b = serviceProvider.GetRequiredService<IB>();
+            int c = a.MathOperation(1, 2);
+            string message = b.GetMessage();
+            Assert.AreEqual(4, c);
+            Assert.AreEqual("Hello World!", message);
+        }
     }
 }

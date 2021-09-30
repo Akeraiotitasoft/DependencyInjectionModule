@@ -37,6 +37,12 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
         {
         }
 
+        public bool Case<TService>(TService instance)
+            where TService : class
+        {
+            return Case(typeof(TService), instance);
+        }
+
         public bool Case(Type serviceType, object instance)
         {
             if (!_overrideRan)
@@ -55,6 +61,13 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
             return _overrideRan;
         }
 
+        public bool Case<TService, TImplementation>()
+            where TService : class
+            where TImplementation : class
+        {
+            return Case(typeof(TService), typeof(TImplementation));
+        }
+
         public bool Case(Type serviceType, Type implementationType)
         {
             if (!_overrideRan)
@@ -66,6 +79,13 @@ namespace Akeraiotitasoft.DependencyInjection.Modules
                 }
             }
             return _overrideRan;
+        }
+
+        public bool Case<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
+            where TService : class
+            where TImplementation : class
+        {
+            return Case(typeof(TService), factory);
         }
 
         public bool Case(Type serviceType, Func<IServiceProvider, object> factory)
