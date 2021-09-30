@@ -12,6 +12,7 @@ namespace Modules.Test
         [SetUp]
         public void Setup()
         {
+            DefaultRegistrationDelegate.Current = DefaultRegistrationDelegate.Delegate;
         }
 
         [Test]
@@ -29,62 +30,7 @@ namespace Modules.Test
         }
 
         [Test]
-        public void LoadModulesEx()
-        {
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.LoadModulesEx();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            IA a = serviceProvider.GetRequiredService<IA>();
-            IB b = serviceProvider.GetRequiredService<IB>();
-            int c = a.MathOperation(1, 2);
-            string message = b.GetMessage();
-            Assert.AreEqual(3, c);
-            Assert.AreEqual("Hello World!", message);
-        }
-
-        [Test]
-        public void LoadModulesEx_Override()
-        {
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.LoadModulesEx((Type interfaceType, Type concreteType, ServiceLifetime serviceLifetime, IServiceCollection serviceCollection) =>
-            {
-                Type typeToRegister = null;
-                if (interfaceType == typeof(IA))
-                {
-                    typeToRegister = typeof(MockA2);
-                }
-                else
-                {
-                    typeToRegister = concreteType;
-                }
-
-                DefaultRegistrationDelegate.Delegate(interfaceType, typeToRegister, serviceLifetime, serviceCollection);
-            });
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            IA a = serviceProvider.GetRequiredService<IA>();
-            IB b = serviceProvider.GetRequiredService<IB>();
-            int c = a.MathOperation(1, 2);
-            string message = b.GetMessage();
-            Assert.AreEqual(4, c);
-            Assert.AreEqual("Hello World!", message);
-        }
-
-        [Test]
-        public void LoadModulesEx2()
-        {
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.LoadModulesEx2();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            IA a = serviceProvider.GetRequiredService<IA>();
-            IB b = serviceProvider.GetRequiredService<IB>();
-            int c = a.MathOperation(1, 2);
-            string message = b.GetMessage();
-            Assert.AreEqual(3, c);
-            Assert.AreEqual("Hello World!", message);
-        }
-
-        [Test]
-        public void LoadModulesEx2_Override()
+        public void LoadModules_Override()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 
@@ -92,9 +38,9 @@ namespace Modules.Test
             overrides.Add(x => x.Case(typeof(IA), typeof(MockA2)));
             overrides.Add(x => x.Default());
 
-            serviceCollection.LoadModulesEx2((IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
+            serviceCollection.LoadModules((IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
             {
-                RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(DefaultRegistrationDelegate2.Delegate, serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
+                RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
                 foreach (var @override in overrides)
                 {
                     if (@override(registrationOverrideSwitch))
@@ -113,16 +59,60 @@ namespace Modules.Test
         }
 
         [Test]
-        public void LoadModulesEx2_Override2()
+        public void LoadModules_Override2()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 
-            serviceCollection.LoadModulesEx2((IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
+            serviceCollection.LoadModules((IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
             {
-                RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(DefaultRegistrationDelegate2.Delegate, serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
+                RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
                 registrationOverrideSwitch.Case(typeof(IA), typeof(MockA2));
                 registrationOverrideSwitch.Default();
             });
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            IA a = serviceProvider.GetRequiredService<IA>();
+            IB b = serviceProvider.GetRequiredService<IB>();
+            int c = a.MathOperation(1, 2);
+            string message = b.GetMessage();
+            Assert.AreEqual(4, c);
+            Assert.AreEqual("Hello World!", message);
+        }
+
+        [Test]
+        public void LoadModules_Override3()
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            DefaultRegistrationDelegate.Current = 
+                (IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
+                {
+                    RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
+                    registrationOverrideSwitch.Case(typeof(IA), typeof(MockA2));
+                    registrationOverrideSwitch.Default();
+                };
+
+            serviceCollection.LoadModules();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            IA a = serviceProvider.GetRequiredService<IA>();
+            IB b = serviceProvider.GetRequiredService<IB>();
+            int c = a.MathOperation(1, 2);
+            string message = b.GetMessage();
+            Assert.AreEqual(4, c);
+            Assert.AreEqual("Hello World!", message);
+        }
+
+        [Test]
+        public void LoadModules_Override4()
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            DefaultRegistrationDelegate.Current =
+                (IServiceCollection serviceCollection, Type serviceType, object instance, Type implementationType, ServiceLifetime serviceLifetime, Func<IServiceProvider, object> factory, bool tryRegister) =>
+                {
+                    RegistrationOverrideSwitch registrationOverrideSwitch = new RegistrationOverrideSwitch(serviceCollection, serviceType, instance, implementationType, serviceLifetime, factory, tryRegister);
+                    registrationOverrideSwitch.Case<IA, MockA2>();
+                    registrationOverrideSwitch.Default();
+                };
+
+            serviceCollection.LoadModules();
             var serviceProvider = serviceCollection.BuildServiceProvider();
             IA a = serviceProvider.GetRequiredService<IA>();
             IB b = serviceProvider.GetRequiredService<IB>();
